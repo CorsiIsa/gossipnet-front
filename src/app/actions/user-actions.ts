@@ -62,8 +62,8 @@ export async function login(prevState: any, formData: FormData) {
     } 
 
     const data= await response.json()
-    cookies().set('token', data.token)
-    cookies().set('email', data.email)
+    ;(await cookies()).set('token', data.token)
+    ;(await cookies()).set('email', data.email)
 
     redirect('/feed')
 
@@ -78,7 +78,7 @@ export async function login(prevState: any, formData: FormData) {
 export async function getUserProfile() {
     const response = await fetch('http://localhost:8082/users/profile', {
         headers: {
-            'Authorization': `Bearer ${cookies().get('token')?.value}`
+            'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
         }
     })
 
@@ -107,7 +107,7 @@ export async function updateUser(prevState: any, formData: FormData) {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${cookies().get('token')?.value}`
+            'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
         },
         body: JSON.stringify(user),
     })
@@ -138,7 +138,7 @@ export async function uploadAvatar(formData: FormData) {
     const response = await fetch('http://localhost:8082/users/avatar', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${cookies().get('token')?.value}`
+            'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
         },
         body: formData,
     })
@@ -161,7 +161,7 @@ export async function uploadAvatar(formData: FormData) {
 export async function searchUsers(name: string) {
     const response = await fetch(`http://localhost:8082/users?name=${name}`, {
         headers: {
-            "Authorization": `Bearer ${cookies().get('token')?.value}`
+            "Authorization": `Bearer ${(await cookies()).get('token')?.value}`
         }
     })
 
@@ -180,6 +180,6 @@ export async function searchUsers(name: string) {
 
 
 export async function logout() {
-    cookies().delete("token")
+    (await cookies()).delete("token")
     redirect('/')
 }
